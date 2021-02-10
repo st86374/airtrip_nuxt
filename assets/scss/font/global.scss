@@ -1,0 +1,41 @@
+$baseColor:#17a2b8;
+
+h2{
+    color:$baseColor;
+    font-weight: bold;
+    font-size: 1.7rem;
+    margin-bottom: 2rem;
+    i{
+        color: #fd7e14;
+        width: 40px;
+        text-align: center;
+        margin-right: 1rem;
+    }
+}
+section{
+    padding: 2rem 0;
+}
+.more_btn{
+    display: table;
+    margin-left: auto;
+    margin-top: 2rem;
+}
+.news{
+    &_links{
+        a{
+            display: flex;
+            color: gray;
+            padding: .5rem 0;
+            margin-top: .5rem;
+            border-bottom: 1px dotted darkgray;
+            transition: .3s;
+            &:hover{
+                color: #fd7e14
+            }
+        }
+    };
+    &_time{
+        width: 100px;
+        color: darkgray;
+    }
+}

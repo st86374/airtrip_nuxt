@@ -1,0 +1,27 @@
+header{
+    background-color: $baseColor;
+    .header{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 50px;
+        &_brand{
+            color: #fff;
+            font-size: 1.8rem;
+            font-style: italic;
+            font-weight: bold;
+        }
+        &_links{
+            a{
+                color: #fff;
+                padding: 0 1rem;
+                transition: .3s;
+                line-height: 50px;
+                display: inline-block;
+                &:hover,.active{
+                    background-color: #127786;
+                }
+            }
+        }
+    }
+}
