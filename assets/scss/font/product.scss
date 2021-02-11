@@ -1,0 +1,66 @@
+.product{
+    &_banner{
+        background-image: url('https://st86374.github.io/airtrip/static/img/beach.fbd1a7f.jpg');
+        height: 250px;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+    }
+    &_img{
+        height: 300px;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+    }
+    &_title{
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin: 1rem 0;
+    }
+    &_content{
+        font-size: 1.3rem;
+        color: $baseColor;
+        margin-bottom: 1rem;
+        font-weight: bold;
+    }
+    &_description{
+        line-height: 1.5;
+    }
+    &_originprice{
+        font-weight: bold;
+    }
+    &_price{
+        color: red;
+        font-size: 1.3rem;
+        font-weight: bold;
+    }
+    &_bar{
+        background-color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        position: sticky;
+        top: 50px;
+        z-index: 5;
+        box-shadow: 1px 1px 2px #ccc;
+        flex-wrap: wrap;
+    }
+    &_categorys{
+        &_btn{
+            border: none;
+            color: gray;
+            padding: 1rem ;
+            background-color: #fff;
+            transition: .3s;
+            &.active,&:hover{
+                background-color: orange;
+                color: #fff;
+            }
+        }
+    }
+    &_search{
+        width: 200px;
+        margin:.25rem 0 .25rem auto;
+    }
+}

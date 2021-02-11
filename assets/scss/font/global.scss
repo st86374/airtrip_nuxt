@@ -12,6 +12,17 @@ h2{
         margin-right: 1rem;
     }
 }
+.breadcrumb{
+    background-color: transparent;
+    margin-bottom: 0;
+    color: gray;
+    a{
+        color: $baseColor;
+    }
+}
+.slick-arrow:before {
+    color: lightblue!important;
+}
 section{
     padding: 2rem 0;
 }
@@ -20,7 +31,7 @@ section{
     margin-left: auto;
     margin-top: 2rem;
 }
-.news{
+.newslist{
     &_links{
         a{
             display: flex;
@@ -37,5 +48,93 @@ section{
     &_time{
         width: 100px;
         color: darkgray;
+    }
+}
+.productlist{
+    .slick-dots{
+        margin-top: 1rem;
+        bottom: auto;
+    }
+    &_item{
+        margin: 0 1rem;
+        display: block;
+        border-radius: 5px;
+        overflow: hidden;
+        background-color: #fff;
+        &:hover{
+            .productlist_img{
+                transform: scale(1.05);
+            }
+        }
+    }
+    &_img_outer{
+        width: 100%;
+        height: 200px;
+        overflow: hidden;
+        position: relative;
+    }
+    &_img{
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center center;
+        transition: .3s;
+    }
+    &_like{
+        background: none;
+        color: inherit;
+        border: none;
+        padding: 0;
+        font: inherit;
+        cursor: pointer;
+        outline: inherit;
+        position: absolute;
+        color: red;
+        z-index: 1;
+        top: .5rem;
+        right: .5rem;
+        font-size: 1.5rem;
+    }
+    &_shopcart{
+        background: none;
+        color: inherit;
+        border: none;
+        padding: 0;
+        font: inherit;
+        cursor: pointer;
+        outline: inherit;
+        color: $baseColor;
+        font-size: 1.5rem;
+    }
+    &_body{
+        padding: 1rem;
+    }
+    &_footer{
+        padding: 0 1rem 1rem 1rem;
+        color: #000;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    &_name{
+        font-size: 1.3rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        color: #000;
+    }
+    &_text{
+        color: darkgray;
+    }
+    &_badge{
+        background-color: gray;
+        color: #fff;
+        padding: .3rem .5rem;
+        border-radius:5px;
+        font-size: .75rem;
+        font-weight: bold;
+    }
+    &_price{
+        color: #000;
+        font-size: 1.3rem;
     }
 }
