@@ -9,11 +9,13 @@ div
             li.breadcrumb-item 商品列表
   section
     .product_bar
-        .container.d-flex
+        .container.d-flex.position-relative
             .product_categorys
                 button.product_categorys_btn(:class="[sort ===''?'active':'']" @click="sort=''") 全部分類
                 button.product_categorys_btn( v-for="( item,index ) in categorys" :class="[sort ===item.category?'active':'']" @click="sort = item.category") {{ item.category }}
             input.product_search(placeholder="請輸入關鍵字" v-model="keyword").form-control
+            button.btn.keyword_cancel(v-if="keyword" @click="keyword=''")
+              i.fas.fa-times
     .container
         .row
             .col-lg-4.col-md-6(v-for="(item, index) in productlist",:key="item.id" v-if="(sort === item.category||sort==='') && (item.title.indexOf(keyword)> -1 || item.description.indexOf(keyword)>-1)")
@@ -35,8 +37,8 @@ div
                     del.mr-3 {{ item.origin_price }}
                     p.productlist_price.text-danger {{ item.price }}
                   p.productlist_price(v-else) {{ item.origin_price }}
-                  button.productlist_shopcart
-                    i.fas.fa-shopping-cart
+                  //- button.productlist_shopcart
+                  //-   i.fas.fa-shopping-cart
             //- p.text-center.my-3(v-else) 無任何一筆符合搜尋結果
 </template>
 <script>

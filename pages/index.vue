@@ -43,42 +43,43 @@ div
         i.fas.fa-luggage-cart
         | 精選商品
       VueSlickCarousel(v-bind="productslick")
-        div(v-for="(item, index) in productlist.slice(0,6)",:key="item.id") 
-          nuxt-link.productlist_item(:to="'/product/'+item.id").shadow-sm
+        div(v-for="(item, index) in productlist.slice(0, 6)", :key="item.id") 
+          nuxt-link.productlist_item.shadow-sm(:to="'/product/' + item.id")
             .productlist_img_outer
-              .productlist_img( :style="{ 'background-image': 'url(' + item.imageUrl + ')'}" )
+              .productlist_img(
+                :style="{ 'background-image': 'url(' + item.imageUrl + ')' }"
+              )
               button.productlist_like(@click.prevent="liketoggle(item)")
-                    i.fas.fa-heart(v-if="likecheck(item.id)")
-                    i.far.fa-heart(v-else)
+                i.fas.fa-heart(v-if="likecheck(item.id)")
+                i.far.fa-heart(v-else)
             .productlist_body
               .d-flex.justify-content-between.align-items-start
-                h3.productlist_name {{item.title}}
-                span.productlist_badge {{item.category}}
-              p.productlist_text {{item.content}}
+                h3.productlist_name {{ item.title }}
+                span.productlist_badge {{ item.category }}
+              p.productlist_text {{ item.content }}
             .productlist_footer
-              .d-flex.align-items-end( v-if="item.origin_price > item.price")
-                del.mr-3 {{ item.origin_price}}
+              .d-flex.align-items-end(v-if="item.origin_price > item.price")
+                del.mr-3 {{ item.origin_price }}
                 p.productlist_price.text-danger {{ item.price }}
-              p(v-else).productlist_price {{ item.origin_price }}
-              button.productlist_shopcart
+              p.productlist_price(v-else) {{ item.origin_price }}
+              button.productlist_shopcart(@click.prevent="shopCartAdd(item)")
                 i.fas.fa-shopping-cart
-      nuxt-link.more_btn(to="/")
+      nuxt-link.more_btn(to="/product")
         button.btn.btn-outline-info(type="button") MORE
 </template>
 
 <script>
 import VueSlickCarousel from "vue-slick-carousel";
-import priceFormat from "~/assets/js/priceformat.js";
-import { productListGet } from '~/api/font.js'
-import "vue-slick-carousel/dist/vue-slick-carousel.css";
-// optional style for arrows & dots
 import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
+import "vue-slick-carousel/dist/vue-slick-carousel.css";
+import priceFormat from "~/assets/js/priceformat.js";
+import { productListGet, shopCartPost ,shopCartGet} from "~/api/font.js";
 export default {
   data() {
     return {
       slide: 0,
       sliding: null,
-      likelist:[],
+      likelist: [],
       news: [
         {
           text: "韓國文化體驗最強攻略!",
@@ -101,7 +102,7 @@ export default {
       ],
       productslick: {
         dots: true,
-        autoplay:true,
+        autoplay: true,
         infinite: true,
         speed: 500,
         slidesToShow: 3,
@@ -112,35 +113,36 @@ export default {
             breakpoint: 991,
             settings: {
               slidesToShow: 2,
-                    slidesToScroll: 2,
+              slidesToScroll: 2,
             },
           },
           {
             breakpoint: 767,
             settings: {
-              arrows:false,
+              arrows: false,
               slidesToShow: 1,
-                    slidesToScroll: 1,
+              slidesToScroll: 1,
             },
           },
         ],
       },
     };
   },
-  components: { VueSlickCarousel },
-  async asyncData(){
-    const list = await productListGet()
-    list.data.products.forEach((element) =>{
-      element.price = priceFormat(element.price)
-    })
-    list.data.products.forEach((element) =>{
-      element.origin_price = priceFormat(element.origin_price)
-    })
-    list.data.products = list.data.products.sort(()=>Math.random()-0.5)
-
-    return{
-      productlist:list.data.products
-    }
+  components: { 
+    VueSlickCarousel,
+    },
+  async asyncData() {
+    const list = await productListGet();
+    list.data.products.forEach((element) => {
+      element.price = priceFormat(element.price);
+    });
+    list.data.products.forEach((element) => {
+      element.origin_price = priceFormat(element.origin_price);
+    });
+    list.data.products = list.data.products.sort(() => Math.random() - 0.5);
+    return {
+      productlist: list.data.products,
+    };
   },
   methods: {
     onSlideStart(slide) {
@@ -149,28 +151,43 @@ export default {
     onSlideEnd(slide) {
       this.sliding = false;
     },
-          likecheck(id){
-            if(this.likelist.map(x => x.id).indexOf(id)> -1){
-                return true
-          }else{
-              return false
-          }
-      },
-      liketoggle(item){
-            if(this.likelist.map(x =>x.id).indexOf(item.id)===-1){
-                console.log(this.likelist.map(x =>x.id).indexOf(item.id))
-                  this.likelist.push(item)
-              }else{
-                  let i = this.likelist.map(x =>x.id).indexOf(item.id)
-                  this.likelist.splice(i, 1)
-              }       
-            localStorage.setItem('likelist',(JSON.stringify(this.likelist)))
-      }  
-  },
-  mounted(){
-      if((JSON.parse(localStorage.getItem('likelist')))){
-          this.likelist = JSON.parse(localStorage.getItem('likelist'))
+    likecheck(id) {
+      if (this.likelist.map((x) => x.id).indexOf(id) > -1) {
+        return true;
+      } else {
+        return false;
       }
-  }
+    },
+    liketoggle(item) {
+      if (this.likelist.map((x) => x.id).indexOf(item.id) === -1) {
+        console.log(this.likelist.map((x) => x.id).indexOf(item.id));
+        this.likelist.push(item);
+      } else {
+        let i = this.likelist.map((x) => x.id).indexOf(item.id);
+        this.likelist.splice(i, 1);
+      }
+      localStorage.setItem("likelist", JSON.stringify(this.likelist));
+    },
+    shopCartAdd(item){
+      let data = {}
+      data.data={}
+      data.data.product_id = item.id;
+      data.data.qty = 1
+      shopCartPost(data).then(()=>{
+        shopCartGet().then((res) => {
+            let shop = res.data.data.carts;
+            shop.forEach((element) => {
+              element.total = priceFormat(element.total);
+            });
+            this.$store.commit("shopcart/shopcartUpdate", shop)
+          })
+      })
+    }
+  },
+  mounted() {
+    if (JSON.parse(localStorage.getItem("likelist"))) {
+      this.likelist = JSON.parse(localStorage.getItem("likelist"));
+    }
+  },
 };
 </script>

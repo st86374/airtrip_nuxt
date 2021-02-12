@@ -42,11 +42,13 @@
         flex-wrap: wrap;
         position: sticky;
         top: 50px;
-        z-index: 5;
+        z-index: 2;
         box-shadow: 1px 1px 2px #ccc;
         flex-wrap: wrap;
     }
     &_categorys{
+        display: flex;
+        align-items: center;
         &_btn{
             border: none;
             color: gray;
@@ -63,4 +65,14 @@
         width: 200px;
         margin:.25rem 0 .25rem auto;
     }
+
+}
+.keyword_cancel{
+    position: absolute;
+    right: 0;
+    background-color: #ced4da;
+    right: 15px;
+    bottom: 7px;
+    border: none;
+    border-radius: 0 .25rem .25rem 0;
 }

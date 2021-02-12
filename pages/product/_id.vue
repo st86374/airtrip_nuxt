@@ -33,7 +33,7 @@ div
                   select.form-control(v-model="qty")
                     option(v-for="n in 10", :value="n") {{ n + '人' }}
               .col-md-3.col-6
-                  button.btn.btn-info.text-break
+                  button.btn.btn-info.text-break(@click.prevent="shopCartAdd()")
                       i.fas.fa-shopping-cart.mr-2
                       |加入購物車
   section.bg-light
@@ -44,26 +44,28 @@ div
               nuxt-link.productlist_item(:to="'/product/'+item.id").shadow-sm
                 .productlist_img_outer
                   .productlist_img( :style="{ 'background-image': 'url(' + item.imageUrl + ')'}" )
-                  button.productlist_like
-                    i.far.fa-heart.fa-2x
+                  button.productlist_like(@click.prevent="liketoggle(item)")
+                   i.fas.fa-heart(v-if="likecheck(item.id)")
+                   i.far.fa-heart(v-else)
                 .productlist_body
                   h3.productlist_name {{item.title}}
                   p.productlist_text {{item.content}}
                 .productlist_footer
                   div(class="d-flex" v-if="item.origin_price > item.price")
-                    del.mr-3 {{ item.origin_price | priceFormat}}
+                    del.mr-3 {{ item.origin_price}}
                     p.productlist_price.text-danger {{ item.price }}
                   p(v-else).productlist_price {{ item.origin_price }}
 </template>
 <script>
 import VueSlickCarousel from "vue-slick-carousel";
 import priceFormat from "~/assets/js/priceformat.js";
-import { productListGet } from "~/api/font.js";
+import { productListGet, shopCartPost ,shopCartGet} from "~/api/font.js";
 export default {
       components: { VueSlickCarousel },
   data() {
     return {
       qty: 1,
+          likelist: [],
         productslick: {
         dots: true,
         autoplay:true,
@@ -92,6 +94,40 @@ export default {
       },
     };
   },
+  methods:{
+    shopCartAdd(){
+      let data = {}
+      data.data={}
+      data.data.product_id = this.product.id;
+      data.data.qty = this.qty
+      shopCartPost(data).then(()=>{
+        shopCartGet().then((res) => {
+            let shop = res.data.data.carts;
+            shop.forEach((element) => {
+              element.total = priceFormat(element.total);
+            });
+            this.$store.commit("shopcart/shopcartUpdate", shop)
+          })
+      })
+    },
+    likecheck(id) {
+      if (this.likelist.map((x) => x.id).indexOf(id) > -1) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    liketoggle(item) {
+      if (this.likelist.map((x) => x.id).indexOf(item.id) === -1) {
+        console.log(this.likelist.map((x) => x.id).indexOf(item.id));
+        this.likelist.push(item);
+      } else {
+        let i = this.likelist.map((x) => x.id).indexOf(item.id);
+        this.likelist.splice(i, 1);
+      }
+      localStorage.setItem("likelist", JSON.stringify(this.likelist));
+    },
+  },
   async asyncData({ params }) {
     const list = await productListGet();
     const data = await productListGet(params.id);
@@ -109,6 +145,11 @@ export default {
       productlist: list.data.products,
       product: data.data.product,
     };
+  },
+    mounted() {
+    if (JSON.parse(localStorage.getItem("likelist"))) {
+      this.likelist = JSON.parse(localStorage.getItem("likelist"));
+    }
   },
 };
 </script>

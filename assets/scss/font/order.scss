@@ -1,0 +1,24 @@
+.order{
+    &_banner{
+        background-image: url('https://storage.googleapis.com/vue-course-api.appspot.com/tomtravel%2F1580352262518.jpg?GoogleAccessId=firebase-adminsdk-zzty7%40vue-course-api.iam.gserviceaccount.com&Expires=1742169600&Signature=SrZE3QpFEAUM8plNei5X5m%2Bg6fXQAzPtjG6YUUSBwQ%2BOppsE8pdp9qUw7Bmj5PtqJn52xY7an1J2MutaKSdnK7BNBXyPC2gyBwyRzVxeU2ZcMlF4qOK%2BkpZpSqgEpdiIzhvk2QLWkKrODaoQHvFFhddKz01v7VEL9FGsJzugXGPwjeovIgOk3rePF%2F2x8sz8jrjveSV5oTD4ANQqwT%2BIUTcasSbs0WW6og8%2Fbl7KDFNdSfZrkGyw61pEYE4jAdjbwFHAhHXeKhMHlIcRVIDX41lp%2BHlaUH70pHc3hrSqF1PIxoZrkDXoWIA59hrEE11r7h6x7%2F1TL%2BPy6%2BOhWIjZyQ%3D%3D');
+        height: 250px;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
+    }
+    &_img{
+        width: 100px;
+        height: 60px;
+        object-fit: cover;
+    }
+    &_table{
+        td,th{
+            text-align: center;
+            vertical-align: middle;
+        }
+    }
+    &_cost{
+        max-width: 300px;
+        margin-right: 1rem;
+    }
+}
