@@ -1,11 +1,14 @@
 <template lang="pug">
+div
   header(:class="{ active: scroll }")
     .container.header
       h1
         nuxt-link.header_brand(to="/") AirTrip
-      button.d-none 
-        i.fas.fa-bars
-      ol.header_links.d-flex
+      .header_toggle.d-lg-none(:class="{ active: toggle }" @click="toggle=!toggle")
+        .bar1
+        .bar2
+        .bar3
+      ol.header_links(:class="{ active: toggle }")
         li
           nuxt-link(to="/product") 商品列表
         li
@@ -30,7 +33,7 @@
                       )
                     td {{ item.product.title }}
                     td {{ item.qty + ' 人' }}
-                    td {{ item.total }}
+                    td {{ item.total | priceFormat}}
               nuxt-link.btn.btn-info.cartdrop_btn(to="/") 前往結帳
             div(v-else)
               p 購物車尚未有商品
@@ -45,12 +48,25 @@ export default {
   data() {
     return {
       scroll: false,
+      toggle:false,
       cartlist:[] ,
     };
   },
   computed:{
     cart(){
       return (this.$store.state.shopcart.cartlist)
+    },
+    loading() {
+      return (this.$store.state.loading.loading)
+    },
+  },
+  filters:{
+    priceFormat(value){
+    return value
+      .toString()
+      .replace(/^(-?\d+?)((?:\d{3})+)(?=\.\d+$|$)/, function(all, pre, groupOf3Digital) {
+        return '$'+(pre + groupOf3Digital.replace(/\d{3}/g, ',$&'))
+      });
     }
   },
   methods: {
@@ -59,15 +75,14 @@ export default {
       this.scroll = false;
     },
     cartDel(id) {
+      this.$store.commit("loading/loadingUpdate", true);
       shopCartDelete(id)
         .then(() => {
           shopCartGet().then((res) => {
               let shop = res.data.data.carts;
-              shop.forEach((element) => {
-                element.total = priceFormat(element.total);
-              });
               this.cartlist = shop;
               this.$store.commit("shopcart/shopcartUpdate",shop)
+              this.$store.commit("loading/loadingUpdate", false);
             })
         })
         .catch((err) => {
@@ -77,9 +92,6 @@ export default {
   },
   async asyncData() {
     const shop = await shopCartGet();
-    shop.data.data.carts.forEach((element) => {
-      element.total = priceFormat(element.total);
-    });
     return {
       cartlist: shop.data.data.carts,
     };
@@ -96,15 +108,13 @@ export default {
     shopCartGet()
     .then((res) => {
       let shop = res.data.data.carts;
-      shop.forEach((element) => {
-        element.total = priceFormat(element.total);
-      });
       this.$store.commit("shopcart/shopcartUpdate",shop)
       this.cartlist = shop
     })
     document.body.addEventListener('click', function(){
       this.shopcartdrop = false
     }); 
+      this.$store.commit("loading/loadingUpdate", false);
   },
 };
 </script>

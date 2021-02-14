@@ -25,9 +25,9 @@ div
               .d-flex.align-items-end(
                 v-if="product.origin_price > product.price"
               )
-                del.product_originprice.mr-3 {{ product.origin_price }}
-                p.product_price {{ product.price }}
-              p.product_originprice(v-else) {{ product.origin_price }}
+                del.product_originprice.mr-3 {{ product.origin_price | priceFormat}}
+                p.product_price {{ product.price | priceFormat}}
+              p.product_originprice(v-else) {{ product.origin_price | priceFormat}}
           .row.justify-content-end.mt-3
               .col-md-3.col-6
                   select.form-control(v-model="qty")
@@ -52,9 +52,9 @@ div
                   p.productlist_text {{item.content}}
                 .productlist_footer
                   div(class="d-flex" v-if="item.origin_price > item.price")
-                    del.mr-3 {{ item.origin_price}}
-                    p.productlist_price.text-danger {{ item.price }}
-                  p(v-else).productlist_price {{ item.origin_price }}
+                    del.mr-3 {{ item.origin_price| priceFormat}}
+                    p.productlist_price.text-danger {{ item.price | priceFormat}}
+                  p(v-else).productlist_price {{ item.origin_price | priceFormat}}
 </template>
 <script>
 import VueSlickCarousel from "vue-slick-carousel";
@@ -94,8 +94,18 @@ export default {
       },
     };
   },
+    filters:{
+    priceFormat(value){
+    return value
+      .toString()
+      .replace(/^(-?\d+?)((?:\d{3})+)(?=\.\d+$|$)/, function(all, pre, groupOf3Digital) {
+        return '$'+(pre + groupOf3Digital.replace(/\d{3}/g, ',$&'))
+      });
+    }
+  },
   methods:{
     shopCartAdd(){
+        this.$store.commit("loading/loadingUpdate", true);
       let data = {}
       data.data={}
       data.data.product_id = this.product.id;
@@ -103,10 +113,8 @@ export default {
       shopCartPost(data).then(()=>{
         shopCartGet().then((res) => {
             let shop = res.data.data.carts;
-            shop.forEach((element) => {
-              element.total = priceFormat(element.total);
-            });
             this.$store.commit("shopcart/shopcartUpdate", shop)
+              this.$store.commit("loading/loadingUpdate", false);
           })
       })
     },
@@ -131,16 +139,11 @@ export default {
   async asyncData({ params }) {
     const list = await productListGet();
     const data = await productListGet(params.id);
-    list.data.products.forEach((element) => {
-      element.price = priceFormat(element.price);
-    });
-    list.data.products.forEach((element) => {
-      element.origin_price = priceFormat(element.origin_price);
-    });
+
+
     data.data.product.origin_price = priceFormat(
       data.data.product.origin_price
     );
-    data.data.product.price = priceFormat(data.data.product.price);
     return {
       productlist: list.data.products,
       product: data.data.product,

@@ -40,7 +40,7 @@ export default {
     // https://go.nuxtjs.dev/bootstrap
     'bootstrap-vue/nuxt',
   ],
-
+  loading: '~/components/LoadingBar.vue',
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   }

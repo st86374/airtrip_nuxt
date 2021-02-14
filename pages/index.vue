@@ -59,9 +59,9 @@ div
               p.productlist_text {{ item.content }}
             .productlist_footer
               .d-flex.align-items-end(v-if="item.origin_price > item.price")
-                del.mr-3 {{ item.origin_price }}
-                p.productlist_price.text-danger {{ item.price }}
-              p.productlist_price(v-else) {{ item.origin_price }}
+                del.mr-3 {{ item.origin_price | priceFormat}}
+                p.productlist_price.text-danger {{ item.price | priceFormat }}
+              p.productlist_price(v-else) {{ item.origin_price | priceFormat}}
               button.productlist_shopcart(@click.prevent="shopCartAdd(item)")
                 i.fas.fa-shopping-cart
       nuxt-link.more_btn(to="/product")
@@ -73,7 +73,7 @@ import VueSlickCarousel from "vue-slick-carousel";
 import "vue-slick-carousel/dist/vue-slick-carousel-theme.css";
 import "vue-slick-carousel/dist/vue-slick-carousel.css";
 import priceFormat from "~/assets/js/priceformat.js";
-import { productListGet, shopCartPost ,shopCartGet} from "~/api/font.js";
+import { productListGet, shopCartPost, shopCartGet } from "~/api/font.js";
 export default {
   data() {
     return {
@@ -128,17 +128,20 @@ export default {
       },
     };
   },
-  components: { 
+  components: {
     VueSlickCarousel,
-    },
+  },
+    filters:{
+    priceFormat(value){
+    return value
+      .toString()
+      .replace(/^(-?\d+?)((?:\d{3})+)(?=\.\d+$|$)/, function(all, pre, groupOf3Digital) {
+        return '$'+(pre + groupOf3Digital.replace(/\d{3}/g, ',$&'))
+      });
+    }
+  },
   async asyncData() {
     const list = await productListGet();
-    list.data.products.forEach((element) => {
-      element.price = priceFormat(element.price);
-    });
-    list.data.products.forEach((element) => {
-      element.origin_price = priceFormat(element.origin_price);
-    });
     list.data.products = list.data.products.sort(() => Math.random() - 0.5);
     return {
       productlist: list.data.products,
@@ -168,21 +171,20 @@ export default {
       }
       localStorage.setItem("likelist", JSON.stringify(this.likelist));
     },
-    shopCartAdd(item){
-      let data = {}
-      data.data={}
+    shopCartAdd(item) {
+      let data = {};
+      data.data = {};
       data.data.product_id = item.id;
-      data.data.qty = 1
-      shopCartPost(data).then(()=>{
+      data.data.qty = 1;
+      this.$store.commit("loading/loadingUpdate", true);
+      shopCartPost(data).then(() => {
         shopCartGet().then((res) => {
-            let shop = res.data.data.carts;
-            shop.forEach((element) => {
-              element.total = priceFormat(element.total);
-            });
-            this.$store.commit("shopcart/shopcartUpdate", shop)
-          })
-      })
-    }
+          let shop = res.data.data.carts;
+          this.$store.commit("shopcart/shopcartUpdate", shop);
+          this.$store.commit("loading/loadingUpdate", false);
+        });
+      });
+    },
   },
   mounted() {
     if (JSON.parse(localStorage.getItem("likelist"))) {
